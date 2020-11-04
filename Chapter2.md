@@ -77,3 +77,56 @@ Sandwich memory anotherSandwich = sandwiches[_index + 1];
 >   sandwiches[_index + 1] = anotherSandwich;
 >   ```
 
+# 8. internal and external functions
+- Apart from public and private, Solidity also has these two visibility types for functions.
+- **Internal**: same as private, but is also **accessible to contracts that inherit** from this contract.
+- **External**: similar to public, but functions can ONLY be called outside the contract - can't be called by other functions inside the contract. 
+
+# 9. To interact with other contracts -> need interface 
+- for external contracts to access data
+```
+contract NumberInterface {
+  function getNum(address _myAddress) public view returns (uint);
+}
+```
+- We only declare the functions we want to interact with. 
+- Don't mention other functions/ state variables.
+- Not defining function body - ends with ;
+- By defining interface, our contract knows what the other contract's function looks like, how to call them and what sort of respond to expect.
+
+# 10. Using interface: 
+```
+contract MyContract {
+  address NumberInterfaceAddress = 0xab38... 
+  // ^ The address of the FavoriteNumber contract on Ethereum
+  NumberInterface numberContract = NumberInterface(NumberInterfaceAddress);
+  // Now `numberContract` is pointing to the other contract
+
+  function someFunction() public {
+    // Now we can call `getNum` from that contract:
+    uint num = numberContract.getNum(msg.sender);
+    // ...and do something with `num` here
+  }
+}
+````
+
+# 11. Handling Multiple Return Values
+```
+function multipleReturns() internal returns(uint a, uint b, uint c) {
+  return (1, 2, 3);
+}
+...
+// multiple assignment
+(a, b, c) = multipleReturns();
+// Or if we only cared about one of the values:
+function getLastReturnValue() external {
+  uint c;
+  // We can just leave the other fields blank:
+  (,,c) = multipleReturns();
+}
+```
+
+### Notes - % 10^n 
+- For a number, by % 10^n, we will get the last n-th number.
+- E.g., 10500 % 1000 = 500
+- 334455 % 100 = 55
